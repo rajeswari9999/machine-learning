@@ -1,0 +1,53 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
+
+# Load the CSV dataset
+df = pd.read_csv('/content/HousePricePrediction.csv')
+
+# Handle non-numeric columns by converting them to numeric or dropping them
+df = pd.get_dummies(df, drop_first=True)
+
+# Handle missing values by filling with mean or using other imputation methods
+df.fillna(df.mean(), inplace=True)
+
+# Separate features and target variable
+X = df.iloc[:, :-1].values  # Features
+y = df.iloc[:, -1].values   # Target
+
+# Check the shape of the features
+print("Feature shape:", X.shape)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.35, random_state=0)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Create a KNN classifier
+k = 5
+knn = KNeighborsClassifier(n_neighbors=k)
+
+# Fit the model to the training data
+knn.fit(X_train, y_train)
+
+# Make predictions on the testing data
+y_pred = knn.predict(X_test)
+
+# Calculate the accuracy of the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+
+# Plotting
+plt.figure(figsize=(5, 6))
+plt.xlabel("Sample Index")
+plt.ylabel("Class Label")
+plt.scatter(range(len(y_test)), y_test, color='blue', label='True Labels', alpha=0.5)
+plt.scatter(range(len(y_test)), y_pred, color='red', label='Predicted Labels', alpha=0.5)
+plt.legend()
+plt.show()
