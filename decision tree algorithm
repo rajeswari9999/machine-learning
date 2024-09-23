@@ -1,0 +1,14 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+df = pd.read_csv('/content/id3 (1).csv')
+#df = pd.DataFrame(data)
+df_numeric = pd.get_dummies(df[['Outlook', 'Temperature', 'Humidity', 'Wind']])
+X = df_numeric.values
+y = df['Answer']
+clf = DecisionTreeClassifier(random_state=42)
+clf.fit(X, y)
+plt.figure(figsize=(12, 8))
+plot_tree(clf, feature_names=df_numeric.columns, class_names=['No', 'Yes'], filled=True, fontsize=10)
+plt.title("Decision Tree Visualization")
+plt.show()
