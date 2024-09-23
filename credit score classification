@@ -1,0 +1,14 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+df = pd.read_csv('/content/credit_score.csv')
+#df = pd.DataFrame(data)
+df_numeric = pd.get_dummies(df[['Credit History Length (Years)','Number of Credit Accounts','Number of Late Payments','Credit Utilization (%)']])
+X = df_numeric.values
+y = df['Credit Score Category']
+clf = DecisionTreeClassifier(random_state=42)
+clf.fit(X, y)
+plt.figure(figsize=(12, 8))
+plot_tree(clf, feature_names=df_numeric.columns, class_names=['Good','Fair','Poor','Excellent'], filled=True, fontsize=10)
+plt.title("Decision Tree Visualization")
+plt.show()
