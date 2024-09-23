@@ -1,0 +1,70 @@
+import numpy as np 
+import pandas as pd
+
+data = pd.read_csv('/content/Play tennis.csv')
+concepts = np.array(data.iloc[:,0:-1])
+print("\nInstances are:\n",concepts)
+target = np.array(data.iloc[:,-1])
+print("\nTarget Values are: ",target)
+
+def learn(concepts, target): 
+    specific_h = concepts[0].copy()
+    print("\nInitialization of specific_h and genearal_h")
+    print("\nSpecific Boundary: ", specific_h)
+    general_h = [["?" for i in range(len(specific_h))] for i in range(len(specific_h))]
+    print("\nGeneric Boundary: ",general_h)  
+
+    for i, h in enumerate(concepts):
+        print("\nInstance", i+1 , "is ", h)
+        if target[i] == "yes":
+            print("Instance is Positive ")
+            for x in range(len(specific_h)): 
+                if h[x]!= specific_h[x]:                    
+                    specific_h[x] ='?'                     
+                    general_h[x][x] ='?'
+                   
+        if target[i] == "no":            
+            print("Instance is Negative ")
+            for x in range(len(specific_h)): 
+                if h[x]!= specific_h[x]:                    
+                    general_h[x][x] = specific_h[x]                
+                else:                    
+                    general_h[x][x] = '?'        
+        
+        print("Specific Bundary after ", i+1, "Instance is ", specific_h)         
+        print("Generic Boundary after ", i+1, "Instance is ", general_h)
+        print("\n")
+
+    indices = [i for i, val in enumerate(general_h) if val == ['?', '?', '?', '?', '?', '?']]    
+    for i in indices:   
+        general_h.remove(['?', '?', '?', '?', '?', '?']) 
+    return specific_h, general_h 
+
+s_final, g_final = learn(concepts, target)
+
+print("Final Specific_h: ", s_final, sep="\n")
+print("Final General_h: ", g_final, sep="\n")
+
+
+
+#cabdidate2
+import pandas as pd
+data = pd.read_csv('/content/training data.txt')
+features = data.iloc[:, :-1].values
+target = data.iloc[:, -1].values
+S = ['0'] * features.shape[1]
+G = [['?'] * features.shape[1]]
+for i, example in enumerate(features):
+    if target[i] == 'Yes':
+        S = [example[j] if S[j] == '0' else '?' if S[j] != example[j] else S[j] for j in range(len(S))]
+        G = [g for g in G if all(g[j] == '?' or g[j] == example[j] for j in range(len(g)))]
+    else:
+        new_G = []
+        for g in G:
+            for j in range(len(g)):
+                if g[j] == '?':
+                    new_G.extend([g[:j] + [val] + g[j+1:] for val in set(features[:, j]) if val != example[j]])
+        G = [g for g in new_G if any(g[j] == '?' or g[j] != S[j] for j in range(len(g)))]
+        
+print(f"Most specific hypothesis S: {S}")
+print(f"Most general hypotheses G: {G}")
