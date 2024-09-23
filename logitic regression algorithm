@@ -1,0 +1,52 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.35, random_state=0)
+
+# Create a Logistic Regression classifier
+log_reg = LogisticRegression(max_iter=200)
+
+# Fit the classifier to the training data
+log_reg.fit(X_train, y_train)
+
+# Make predictions on the testing data
+y_pred = log_reg.predict(X_test)
+
+# Calculate the accuracy of the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+# Calculate the confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+# Display the confusion matrix
+print("Confusion Matrix:")
+print(cm)
+
+# Scatter plot of the true labels
+plt.figure(figsize=(10, 5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap='viridis', edgecolor='k', s=50)
+plt.title('True Labels')
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+
+# Scatter plot of the predicted labels
+plt.subplot(1, 2, 2)
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred, cmap='viridis', edgecolor='k', s=50)
+plt.title('Predicted Labels')
+plt.xlabel(iris.feature_names[0])
+plt.ylabel(iris.feature_names[1])
+
+plt.tight_layout()
+plt.show()
