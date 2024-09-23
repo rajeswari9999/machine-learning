@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+from sklearn.metrics import r2_score
+
+# Sample data
+x = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
+y = np.array([15, 11, 2, 8, 25, 32])
+
+# Fit linear regression model
+model_linear = LinearRegression().fit(x, y)
+
+# Fit polynomial regression model
+model_poly = make_pipeline(PolynomialFeatures(degree=2), LinearRegression()).fit(x, y)
+
+# Make predictions
+y_pred_linear = model_linear.predict(x)
+y_pred_poly = model_poly.predict(x)
+
+# Calculate R² scores
+r2_linear = r2_score(y, y_pred_linear)
+r2_poly = r2_score(y, y_pred_poly)
+
+print(f"R² Score for Linear Regression: {r2_linear:.2f}")
+print(f"R² Score for Polynomial Regression: {r2_poly:.2f}")
+
+# Plot the results
+plt.scatter(x, y, color='blue', label='Data')
+plt.plot(x, y_pred_linear, color='red', label='Linear')
+plt.plot(x, y_pred_poly, color='green', label='Polynomial')
+plt.legend()
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('Linear vs Polynomial Regression')
+plt.show()
