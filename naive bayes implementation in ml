@@ -1,0 +1,42 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix, accuracy_score
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset from a CSV file
+# Replace 'path_to_your_file.csv' with the actual path to your CSV file
+data = pd.read_csv('/content/IRIS.csv')
+
+# Assuming the last column is the target variable and all other columns are features
+X = data.iloc[:, :-1].values
+y = data.iloc[:, -1].values
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create and train the Gaussian Naive Bayes model
+gnb = GaussianNB()
+gnb.fit(X_train, y_train)
+
+# Predict the test set results
+y_pred = gnb.predict(X_test)
+
+# Compute the confusion matrix and accuracy
+conf_matrix = confusion_matrix(y_test, y_pred)
+accuracy = accuracy_score(y_test, y_pred)
+
+# Print the confusion matrix and accuracy
+print("Confusion Matrix:")
+print(conf_matrix)
+
+print(f"\nAccuracy: {accuracy:.2f}")
+
+# Visualize the confusion matrix using a heatmap
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
